@@ -6,7 +6,7 @@
 [![Code Climate](https://codeclimate.com/github/erichmenge/api-versions.png)](https://codeclimate.com/github/erichmenge/api-versions)
 
 ### Requirements
-* Rails 4 or Rails 3
+* Rails 3
 * Ruby 1.9 or greater
 
 

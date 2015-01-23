@@ -19,6 +19,13 @@ describe 'API Routing' do
       @controller.class.should == Api::V1::BarController
     end
 
+    it "should default an unversioned header" do
+      get new_api_bar_path, nil, 'HTTP_ACCEPT' => 'application/json'
+      @controller.class.should == Api::V1::BarController
+      get new_api_foo_path, nil, 'HTTP_ACCEPT' => 'application/json'
+      response.status.should == 404
+    end
+
     it "should default with nothing after the semi-colon" do
       get new_api_bar_path, nil, 'HTTP_ACCEPT' => 'application/vnd.myvendor+json; '
       @controller.class.should == Api::V1::BarController

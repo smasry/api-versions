@@ -14,6 +14,16 @@ module ApiVersions
       def to_version_string(version)
         version.to_s.gsub(VERSION_SEPARATOR, '.')
       end
+
+      # @see Gem::Version#bump
+      def bump_minor(version)
+        segments = version.segments.dup
+        segments.pop while segments.any? { |s| String === s }
+        segments.push 0 if segments.size == 1
+
+        segments[-1] = segments[-1].succ
+        Gem::Version.new segments.join('.')
+      end
     end
 
     def initialize(context, &block)

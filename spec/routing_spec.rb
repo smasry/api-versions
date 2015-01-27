@@ -4,13 +4,35 @@ describe 'API Routing' do
   include RSpec::Rails::RequestExampleGroup
 
   describe "V1" do
+    it "should not route something from V1.1" do
+      get new_api_foo_path, nil, 'HTTP_ACCEPT' => 'application/vnd.myvendor+json;version=1.1'
+      response.status.should == 404
+    end
+
     it "should not route something from V2" do
       get new_api_foo_path, nil, 'HTTP_ACCEPT' => 'application/vnd.myvendor+json;version=1'
       response.status.should == 404
     end
 
+    it "should not route missing prerelease versions" do
+      get new_api_bar_path, nil, 'HTTP_ACCEPT' => 'application/vnd.myvendor+json;version=1.1b1'
+      response.status.should == 404
+      get new_api_bar_path, nil, 'HTTP_ACCEPT' => 'application/vnd.myvendor+json;version=1.0b1'
+      response.status.should == 404
+    end
+
     it "should route" do
       get new_api_bar_path, nil, 'HTTP_ACCEPT' => 'application/vnd.myvendor+json;version=1'
+      @controller.class.should == Api::V1::BarController
+    end
+
+    it "should route with minor version" do
+      get new_api_bar_path, nil, 'HTTP_ACCEPT' => 'application/vnd.myvendor+json;version=1.0'
+      @controller.class.should == Api::V1::BarController
+    end
+
+    it "should ignore patch version" do
+      get new_api_bar_path, nil, 'HTTP_ACCEPT' => 'application/vnd.myvendor+json;version=1.0.5'
       @controller.class.should == Api::V1::BarController
     end
 
@@ -29,6 +51,27 @@ describe 'API Routing' do
     it "should default with nothing after the semi-colon" do
       get new_api_bar_path, nil, 'HTTP_ACCEPT' => 'application/vnd.myvendor+json; '
       @controller.class.should == Api::V1::BarController
+    end
+  end
+
+  describe "V1.1" do
+    it "should copy bar" do
+      get new_api_bar_path, nil, 'HTTP_ACCEPT' => 'application/vnd.myvendor+json;version=1.1'
+      @controller.class.should == Api::V1dot1::BarController
+    end
+  end
+
+  describe "V2.0b" do
+    it "should route prerelease versions" do
+      get new_api_foo_path, nil, 'HTTP_ACCEPT' => 'application/vnd.myvendor+json;version=2.0b'
+      @controller.class.should == Api::V2dot0b::FooController
+    end
+  end
+
+  describe "V2.0b1" do
+    it "should route numbered prerelease versions" do
+      get new_api_foo_path, nil, 'HTTP_ACCEPT' => 'application/vnd.myvendor+json;version=2.0b1'
+      @controller.class.should == Api::V2dot0b1::FooController
     end
   end
 

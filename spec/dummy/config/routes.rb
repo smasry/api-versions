@@ -6,6 +6,27 @@ Dummy::Application.routes.draw do
       end
     end
 
+    version 1.1 do
+      cache as: 'v1.1' do
+        resources :bar
+        inherit from: 'v1'
+      end
+    end
+
+    version '2.0b' do
+      cache as: 'v2.0b' do
+        resources :foo
+        inherit from: 'v1'
+      end
+    end
+
+    version '2.0b1' do
+      cache as: 'v2.0b1' do
+        resources :foo
+        inherit from: 'v1'
+      end
+    end
+
     version 2 do
       cache as: 'v2' do
         resources :foo

@@ -23,11 +23,15 @@ module ApiVersions
     end
 
     def matches_version?(accept_string)
-      accept_string =~ /version\s*?=\s*?#{@process_version}\b/
+      accept_string =~ version_regex(@process_version)
     end
 
     def unversioned?(accept_string)
-      @process_version == self.class.default_version && !(accept_string =~ /version\s*?=\s*?\d*\b/i)
+      @process_version == self.class.default_version && !(accept_string =~ version_regex)
+    end
+
+    def version_regex(version_pattern = '\d')
+      Regexp.new "version\\s*?=\\s*?#{version_pattern}\\b"
     end
   end
 end

@@ -27,7 +27,11 @@ module ApiVersions
     end
 
     def unversioned?(accept_string)
-      @process_version == self.class.default_version && !(accept_string =~ version_regex)
+      @process_version == get_default_version && !(accept_string =~ version_regex)
+    end
+
+    def get_default_version
+      self.class.default_version
     end
 
     def version_regex(version_pattern = '\d')

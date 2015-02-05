@@ -39,6 +39,8 @@ module ApiVersions
         # Valid module names are [0-9A-Za-z_] but ActionDispatch will camelize and remove underscores
         scope({ module: "v#{self.class.to_version_dsl(version_number)}" }, &block)
       end
+
+      Versions.add_version(version_number) # Track the version
     end
 
     def inherit(options)

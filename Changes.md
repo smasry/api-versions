@@ -1,3 +1,7 @@
+## 1.4.0
+
+* Add support for minor versions, including minor_bump generator.
+
 ## 1.2.0
 
 * Pass `#api` options to Rails namespace          [#1, David Celis]

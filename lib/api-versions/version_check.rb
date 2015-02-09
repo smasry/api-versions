@@ -23,11 +23,23 @@ module ApiVersions
     end
 
     def matches_version?(accept_string)
-      accept_string =~ /version\s*?=\s*?#{@process_version}\b/
+      process_version = Gem::Requirement.new(@process_version)
+      # Ignore anything past the minor version
+      # Versions can contain lowercase letters to indicate prerelease: http://ruby-doc.org/stdlib-2.0/libdoc/rubygems/rdoc/Gem/Version.html
+      accept_version = Gem::Version.new version_regex.match(accept_string).try(:[], :version)
+      process_version.satisfied_by? accept_version
     end
 
     def unversioned?(accept_string)
-      @process_version == self.class.default_version && !(accept_string =~ /version\s*?=\s*?\d*\b/i)
+      @process_version == get_default_version && !(accept_string =~ version_regex)
+    end
+
+    def get_default_version
+      self.class.default_version
+    end
+
+    def version_regex
+      /version\s*?=\s*?(?<version>[0-9]+(\.[0-9a-z]+)?)([^\.0-9a-z]|$)/
     end
   end
 end

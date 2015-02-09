@@ -1,7 +1,7 @@
 module ApiVersions
   module Generators
-    class BumpGenerator < Rails::Generators::Base
-      desc "Bump API version to next major version, initializing controllers"
+    class MinorBumpGenerator < Rails::Generators::Base
+      desc "Bump API version to next minor version, initializing controllers"
       source_root File.expand_path('../templates', __FILE__)
 
       def get_controllers
@@ -18,7 +18,7 @@ module ApiVersions
       end
 
       def generate_new_controllers
-        new_version_string = ApiVersions::DSL.to_version_dsl(@highest_version.bump)
+        new_version_string = ApiVersions::DSL.to_version_dsl(ApiVersions::DSL.bump_minor(@highest_version))
         @controllers.each do |controller|
           new_controller = controller.gsub(/api\/v#{@highest_version_string}\//, "api/v#{new_version_string}/")
           @current_new_controller = new_controller.chomp(File.extname(controller)).camelize

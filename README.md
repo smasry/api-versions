@@ -1,9 +1,7 @@
 # api-versions
 
-[![Build Status](https://travis-ci.org/EDMC/api-versions.png?branch=master)](https://travis-ci.org/EDMC/api-versions)
-[![Gem Version](https://badge.fury.io/rb/api-versions.png)](http://badge.fury.io/rb/api-versions)
-[![Coverage Status](https://coveralls.io/repos/erichmenge/api-versions/badge.png)](https://coveralls.io/r/erichmenge/api-versions)
-[![Code Climate](https://codeclimate.com/github/erichmenge/api-versions.png)](https://codeclimate.com/github/erichmenge/api-versions)
+[![Build Status](https://travis-ci.org/PagerDuty/api-versions.png?branch=master)](https://travis-ci.org/PagerDuty/api-versions)
+[![Code Climate](https://codeclimate.com/github/PagerDuty/api-versions.png)](https://codeclimate.com/github/PagerDuty/api-versions)
 
 ### Requirements
 * Rails 3
@@ -22,21 +20,21 @@ api-versions is very lightweight. It adds a generator and only one method to the
 *See below for more details on each of these topics*
 
 #### Assumptions api-versions makes:
-* You want the client to use headers to specify the API version instead of changing the URL. (`Accept` header of `application/vnd.myvendor+json;version=1` for example)
-* You specify your API version in whole integers. v1, v2, v3, etc.
-  If you need semantic versioning for an API you're likely making too many backwards incompatible changes. API versions should not change all that often.
+* You want the client to use headers to specify the API version instead of changing the URL. (`Accept` header of `application/vnd.myvendor+json;version=1.0` for example)
+* You specify your API version in major and minor versions. v1, v1.1, v2, v2.10, v3, etc.
 * Your API controllers will live under the `api/v{n}/` directory. For example `app/controllers/api/v1/authorizations_controller.rb`.
+  To meet requirements for Ruby module names, dots (`.`) in the version name are replaced by the word "dot".
 
 ## Installation
 In your Gemfile:
 
-    gem "api-versions", "~> 1.0"
+    gem "api-versions", "~> 1.4"
 
 ## Versions are specified by header, not by URL
 A lot of APIs are versioned by changing the URL. `http://test.host/api/v1/some_resource/new` for example.
 But is some_resource different from version 1 to version 2? It is likely the same resource, it is simply the interface that is changing.
 api-versions prefers the URLs stay the same. `http://test.host/api/some_resource/new` need not ever change (so long as the resource exists). The client specifies how it wants to interface with
-this resource with the `Accept` header. So if the client wants version 2 of the API, the `Accept` header might look like this: `application/vnd.myvendor+json;version=2`. A complete example is
+this resource with the `Accept` header. So if the client wants version 2 of the API, the `Accept` header might look like this: `application/vnd.myvendor+json;version=2.0`. A complete example is
 below.
 
 ## DSL ##
@@ -79,7 +77,7 @@ In your routes.rb file:
                             DELETE /api/authorizations/:id(.:format)      api/v2/authorizations#destroy
 
 
-Then the client simply sets the Accept header `application/vnd.myvendor+json;version=1`. If no version is specified, the default version you set will be assumed.
+Then the client simply sets the Accept header `application/vnd.myvendor+json;version=1.0`. If no version is specified, the default version you set will be assumed.
 You'll of course still need to copy all of your controllers over (or bump them automatically, see below), even if they haven't changed from version to version.  At least you'll remove a bit of the mess in your routes file.
 
 A more complicated example:
@@ -169,9 +167,10 @@ And finally `rake routes` outputs:
                               GET    /api/my_new_resource/:id(.:format)      api/v3/my_new_resource#show
                               PUT    /api/my_new_resource/:id(.:format)      api/v3/my_new_resource#update
                               DELETE /api/my_new_resource/:id(.:format)      api/v3/my_new_resource#destroy
-## api_versions:bump
+## `api_versions:bump` and `api_versions:minor_bump`
 The api-versions gem provides a Rails generator called `api_versions:bump`. This generator will go through all of your API controllers and find the highest version number and bump
-all controllers with it up to the next in sequence.
+all controllers with it up to the next major version in sequence.
+Another generator, called `api_versions:minor_bump`, will do the same except bump to the next minor version.
 
 If for example you have a controller `api/v1/authorizations_controller.rb` it will create `api/v2/authorizations_controller.rb` and inside:
 
@@ -223,7 +222,7 @@ require 'spec_helper'
 describe Api::V1::WidgetsController do
   describe "GET 'index'" do
     it "should be successful" do
-      get '/api/widgets', {}, 'HTTP_ACCEPT' => 'application/vnd.myvendor+json; version=1'
+      get '/api/widgets', {}, 'HTTP_ACCEPT' => 'application/vnd.myvendor+json; version=1.0'
       response.should be_success
     end
   end
@@ -238,7 +237,7 @@ require 'test_helper'
 
 class Api::V1::WidgetsControllerTest < ActionDispatch::IntegrationTest
   test "GET 'index'" do
-    get '/api/widgets', {}, 'HTTP_ACCEPT' => 'application/vnd.myvendor+json; version=1'
+    get '/api/widgets', {}, 'HTTP_ACCEPT' => 'application/vnd.myvendor+json; version=1.0'
     assert_response 200
   end
 end

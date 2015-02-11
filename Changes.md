@@ -1,3 +1,7 @@
+## 1.4.1
+
+* Adds `ApiVersions::Versions` to track and query all known versions.
+
 ## 1.4.0
 
 * Add support for minor versions, including minor_bump generator.

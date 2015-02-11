@@ -11,11 +11,12 @@
 #### api-versions is a Gem to help you manage your Rails API endpoints.
 api-versions is very lightweight. It adds a generator and only one method to the Rails route mapper.
 
-##### It helps you in three ways:
+##### It helps you in four ways:
 
 * Provides a DSL for versioning your API in your routes file, favoring client headers vs changing the resource URLs.
 * Provides methods to cache and retrieve resources in your routes file to keep it from getting cluttered
 * Provides a generator to bump your API controllers to the next version, while inheriting the previous version.
+* Provides a mechanism to query and introspect your application's API versions.
 
 *See below for more details on each of these topics*
 

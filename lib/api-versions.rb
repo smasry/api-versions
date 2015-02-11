@@ -1,6 +1,7 @@
 require "api-versions/version"
 require "api-versions/version_check"
 require "api-versions/dsl"
+require "api-versions/versions"
 require 'api-versions/middleware'
 require 'api-versions/railtie'
 

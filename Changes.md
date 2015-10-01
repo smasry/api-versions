@@ -1,3 +1,7 @@
+## 1.4.2
+
+* Adds support for internal header `api.version`
+
 ## 1.4.1
 
 * Adds `ApiVersions::Versions` to track and query all known versions.
